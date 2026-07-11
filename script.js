@@ -20,12 +20,13 @@ summarizeBtn.addEventListener('click', async () => {
     }
 
     loading.classList.remove('hidden');
+    loading.textContent = 'Thinking...';
     results.classList.add('hidden');
     summarizeBtn.disabled = true;
 
     try {
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -53,7 +54,16 @@ ${notes}`
         );
 
         if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+            if (response.status === 429) {
+                throw new Error('The AI service is temporarily busy. Please wait a moment and try again.');
+            }
+            if (response.status === 400) {
+                throw new Error('There was a problem with the request. Double-check your API key is valid.');
+            }
+            if (response.status === 403) {
+                throw new Error('That API key was rejected. Please check it or generate a new one at aistudio.google.com.');
+            }
+            throw new Error(`Something went wrong (error ${response.status}). Please try again.`);
         }
 
         const data = await response.json();
@@ -65,7 +75,7 @@ ${notes}`
 
         results.classList.remove('hidden');
     } catch (err) {
-        alert('Something went wrong: ' + err.message);
+        alert(err.message);
     } finally {
         loading.classList.add('hidden');
         summarizeBtn.disabled = false;
