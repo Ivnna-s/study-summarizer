@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Notes Summarizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Study Notes Summarizer</h1>
+        <p class="subtitle">Paste your notes, get a summary and quiz questions.</p>
+
+        <div class="api-key-section">
+            <label for="apiKey">Your Gemini API Key</label>
+            <input type="password" id="apiKey" placeholder="Paste your API key here">
+            <p class="hint">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a>. It stays in your browser only.</p>
+        </div>
+
+        <textarea id="notesInput" placeholder="Paste your lecture notes or article here..."></textarea>
+
+        <button id="summarizeBtn">Summarize</button>
+
+        <div id="loading" class="hidden">Thinking...</div>
+
+        <div id="results" class="hidden">
+            <h2>Summary</h2>
+            <div id="summaryOutput"></div>
+
+            <h2>Quiz Questions</h2>
+            <div id="quizOutput"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
