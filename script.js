@@ -2,6 +2,7 @@ const summarizeBtn = document.getElementById('summarizeBtn');
 const notesInput = document.getElementById('notesInput');
 const apiKeyInput = document.getElementById('apiKey');
 const loading = document.getElementById('loading');
+const loadingText = document.getElementById('loadingText');
 const results = document.getElementById('results');
 const summaryOutput = document.getElementById('summaryOutput');
 const quizOutput = document.getElementById('quizOutput');
@@ -20,7 +21,7 @@ summarizeBtn.addEventListener('click', async () => {
     }
 
     loading.classList.remove('hidden');
-    loading.textContent = 'Thinking...';
+    loadingText.textContent = 'Thinking...';
     results.classList.add('hidden');
     summarizeBtn.disabled = true;
 
@@ -70,8 +71,8 @@ ${notes}`
         const text = data.candidates[0].content.parts[0].text;
 
         const [summaryPart, quizPart] = text.split('QUIZ:');
-        summaryOutput.textContent = summaryPart.replace('SUMMARY:', '').trim();
-        quizOutput.textContent = quizPart ? quizPart.trim() : 'No quiz generated.';
+        renderSummary(summaryPart ? summaryPart.replace('SUMMARY:', '').trim() : '');
+        renderQuiz(quizPart ? quizPart.trim() : '');
 
         results.classList.remove('hidden');
     } catch (err) {
@@ -81,3 +82,62 @@ ${notes}`
         summarizeBtn.disabled = false;
     }
 });
+
+function renderSummary(summaryText) {
+    summaryOutput.textContent = summaryText || 'No summary generated.';
+}
+
+function renderQuiz(quizText) {
+    quizOutput.innerHTML = '';
+
+    if (!quizText) {
+        quizOutput.textContent = 'No quiz generated.';
+        return;
+    }
+
+    // Split into numbered items like "1. Question? Answer: ..."
+    const items = quizText
+        .split(/\n(?=\d+\.\s)/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+    if (items.length === 0) {
+        quizOutput.textContent = quizText;
+        return;
+    }
+
+    items.forEach((item, i) => {
+        const match = item.match(/^\d+\.\s*(.*?)\s*Answer:\s*(.*)$/s);
+        const card = document.createElement('div');
+        card.className = 'quiz-card';
+
+        const number = document.createElement('span');
+        number.className = 'quiz-number';
+        number.textContent = `Q${i + 1}`;
+        card.appendChild(number);
+
+        const question = document.createElement('div');
+        question.className = 'quiz-question';
+
+        const answer = document.createElement('div');
+        answer.className = 'quiz-answer';
+
+        if (match) {
+            question.textContent = match[1].trim();
+            answer.innerHTML = `<strong>Answer:</strong> ${escapeHtml(match[2].trim())}`;
+        } else {
+            question.textContent = item.replace(/^\d+\.\s*/, '');
+            answer.textContent = '';
+        }
+
+        card.appendChild(question);
+        if (answer.textContent || answer.innerHTML) card.appendChild(answer);
+        quizOutput.appendChild(card);
+    });
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}

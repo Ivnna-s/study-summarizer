@@ -4,31 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Notes Summarizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Study Notes Summarizer</h1>
-        <p class="subtitle">Paste your notes, get a summary and quiz questions.</p>
+    <div class="glow"></div>
 
-        <div class="api-key-section">
-            <label for="apiKey">Your Gemini API Key</label>
-            <input type="password" id="apiKey" placeholder="Paste your API key here">
-            <p class="hint">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a>. It stays in your browser only.</p>
+    <div class="container">
+        <header class="page-header">
+            <span class="eyebrow">// study-notes</span>
+            <h1>Notes in. <mark>Clarity</mark> out.</h1>
+            <p class="subtitle">Paste your notes, get a highlighter-tight summary and a quiz to test yourself.</p>
+        </header>
+
+        <section class="api-key-section">
+            <label for="apiKey">Gemini API key</label>
+            <input type="password" id="apiKey" placeholder="Paste your API key here" autocomplete="off">
+            <p class="hint">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com</a> — it stays in your browser only.</p>
+        </section>
+
+        <section class="input-section">
+            <textarea id="notesInput" placeholder="Paste your lecture notes or article here..."></textarea>
+            <button id="summarizeBtn">
+                <span class="btn-label">Summarize</span>
+                <span class="btn-highlight"></span>
+            </button>
+        </section>
+
+        <div id="loading" class="hidden">
+            <span class="pulse-dot"></span>
+            <span id="loadingText">Thinking...</span>
         </div>
 
-        <textarea id="notesInput" placeholder="Paste your lecture notes or article here..."></textarea>
-
-        <button id="summarizeBtn">Summarize</button>
-
-        <div id="loading" class="hidden">Thinking...</div>
-
         <div id="results" class="hidden">
-            <h2>Summary</h2>
-            <div id="summaryOutput"></div>
+            <section class="result-block">
+                <h2><span class="tag">Summary</span></h2>
+                <div id="summaryOutput"></div>
+            </section>
 
-            <h2>Quiz Questions</h2>
-            <div id="quizOutput"></div>
+            <section class="result-block">
+                <h2><span class="tag">Quiz</span></h2>
+                <div id="quizOutput"></div>
+            </section>
         </div>
     </div>
 
